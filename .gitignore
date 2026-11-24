@@ -1,0 +1,22 @@
+# โปรเจกต์อื่นที่มี repo ของตัวเองแล้ว
+travel-planner/
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Local database / secrets
+*.db
+*.sqlite
+*.sqlite3
+.env
+.env.*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

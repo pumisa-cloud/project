@@ -1,0 +1,22 @@
+{
+  "name": "project-checklist-prototype",
+  "version": "1.0.0",
+  "description": "Prototype: Project checklist system with process templates, assignees, tracking and notifications",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "seed": "node src/seed.js",
+    "build:web": "cd web && npm run build",
+    "dev:web": "cd web && npm run dev"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.3.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.15",
+    "socket.io": "^4.8.0"
+  },
+  "devDependencies": {}
+}
