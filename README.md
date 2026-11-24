@@ -3,14 +3,25 @@
 ระบบกำหนดกระบวนการ มอบหมายงาน ติดตามความคืบหน้า และแจ้งเตือน สำหรับงานด้านการพัฒนาบุคลากร (HRD)
 ใช้ธีมสีมหาวิทยาลัยขอนแก่น (KKU Maroon `#A73B24`)
 
-## เริ่มต้นใช้งาน
+## 🌐 แอปสำหรับทีม (แนะนำ)
 
-### Demo แบบกดได้ทันที (ไม่ต้องติดตั้งอะไร)
+เปิดได้ที่ **https://pumisa-cloud.github.io/project/**
 
-เปิด `demo/index.html` ในเบราว์เซอร์ — ข้อมูลจำลองเก็บใน `localStorage`
+- ทุกคนในทีมเปิด URL เดียวกัน แล้วเลือกชื่อตัวเอง (ไม่ต้องล็อกอิน)
+- ข้อมูลเก็บกลางที่ **Supabase (Postgres)** และอัปเดตแบบ **realtime** ให้ทุกคนเห็นตรงกัน
+- Deploy อัตโนมัติจาก `main` ผ่าน GitHub Actions (`.github/workflows/deploy.yml`)
+- ไฟล์: [`app/index.html`](app/index.html)
+- ตั้งค่า Supabase: [`supabase/README.md`](supabase/README.md)
+
+> ถ้ายังไม่ได้ใส่ URL/anon key ของ Supabase แอปจะทำงานใน **โหมดท้องถิ่น** (เก็บใน `localStorage`)
+> และแสดงแถบตั้งค่าสีเหลือง — ดูวิธีเชื่อมได้ที่ [`supabase/README.md`](supabase/README.md)
+
+## 🧪 Demo แบบกดได้ทันที (ไม่ต้องติดตั้งอะไร)
+
+เปิด [`demo/index.html`](demo/index.html) ในเบราว์เซอร์ — ข้อมูลจำลองเก็บใน `localStorage`
 ดูวิธีทดสอบได้ที่ [`demo/README.md`](demo/README.md)
 
-### ต้นแบบ API จริง (Express + SQLite + Socket.IO)
+## 🛠 ต้นแบบ API จริง (Express + SQLite + Socket.IO)
 
 ```bash
 cd prototype
@@ -32,5 +43,7 @@ npm run dev
 ## เอกสาร
 
 - [`design-document.md`](design-document.md) — ภาพรวมระบบ บทบาท กติกา Data model และ API
-- [`demo/index.html`](demo/index.html) — Interactive demo
+- [`supabase/schema.sql`](supabase/schema.sql) — Schemaฐานข้อมูลสำหรับแอปทีม
+- [`app/index.html`](app/index.html) — แอปทีม (Supabase + Realtime)
+- [`demo/index.html`](demo/index.html) — Interactive demo แบบ standalone
 - [`prototype/`](prototype/) — ต้นแบบ Express + SQLite + React
