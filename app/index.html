@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Project Checklist — ทีม HRD</title>
+<title>Project Checklist — Demo สำหรับฐานข้อมูลมหาวิทยาลัย</title>
 <style>
 /* ===== KKU theme ===== */
 :root{
@@ -125,13 +125,9 @@ label.field{display:block;font-size:12px;font-weight:600;color:var(--muted);marg
 .task-row:last-child{border:none}.step-table{font-size:13px;margin-bottom:12px}.step-table td{padding:7px}
 .step-table input:not([type=checkbox]){width:100%}.step-table input[type=checkbox]{width:auto}
 .form-actions{margin-top:14px}
-.live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#4ADE80;margin-right:6px;box-shadow:0 0 0 3px rgba(74,222,128,.2)}
-.live-dot.off{background:var(--gold);box-shadow:0 0 0 3px rgba(217,164,65,.2)}
-.conn{font-size:11px;color:rgba(255,255,255,.82);padding:8px 12px 2px;display:flex;align-items:center}
-.setup-bar{padding:12px 22px;background:var(--gold-soft);border-bottom:1px solid #E8C77A;color:#7A5200;font-size:13px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.setup-bar code{background:#fff;border:1px solid #E8C77A;border-radius:5px;padding:2px 6px;font-size:12px}
-.setup-panel{margin-top:12px;background:#fff;border:1px solid #E8C77A;border-radius:10px;padding:16px}
-.setup-panel ol{margin:8px 0 14px;padding-left:20px;line-height:1.9}
+.conn{font-size:11px;color:rgba(255,255,255,.82);padding:8px 12px 2px;display:flex;align-items:center;gap:6px}
+.demo-badge{display:inline-block;background:rgba(217,164,65,.22);border:1px solid rgba(217,164,65,.5);color:#FFE7B0;
+  border-radius:999px;padding:2px 9px;font-size:10px;font-weight:700}
 @media(max-width:900px){.sidebar{width:210px}.main{padding:20px}}
 @media(max-width:640px){.layout{flex-direction:column}.sidebar{width:100%;padding:14px}.sidebar-footer{margin-top:14px}.main{padding:16px}.page-head{flex-direction:column}}
 </style>
@@ -146,8 +142,8 @@ label.field{display:block;font-size:12px;font-weight:600;color:var(--muted);marg
     <div id="nav"></div>
     <a href="landing.html" style="margin-top:8px">ℹ หน้าแนะนำโปรเจกต์</a>
     <div class="sidebar-footer">
-      <div class="conn" id="conn"><i class="live-dot off"></i> กำลังเชื่อมต่อ...</div>
-      <div class="userbox"><div>ใช้งานในนาม (เลือกชื่อผู้ใช้)</div>
+      <div class="conn"><span class="demo-badge">DEMO</span> ข้อมูลเก็บในเบราว์เซอร์นี้</div>
+      <div class="userbox"><div>ใช้งานในนาม (จำลองการเลือกผู้ใช้)</div>
         <select id="userSelect" onchange="act.switchUser(this.value)"></select>
       </div>
       <button class="btn ghost small" onclick="act.scan()">⏰ รันสแกนกำหนดเวลา</button>
@@ -156,14 +152,12 @@ label.field{display:block;font-size:12px;font-weight:600;color:var(--muted);marg
   </aside>
   <main class="main" id="main"></main>
 </div>
-<div id="setupBar"></div>
 <div class="toasts" id="toasts"></div>
 <script>
 
 /* ===================== utils ===================== */
-const LOCAL_KEY='pcteam-state-v1'
-const CFG_KEY='pcteam-supabase-config'
-const TABLES=['users','templates','template_steps','projects','project_steps','checklist_items','activity','notifications']
+const LOCAL_KEY='pckku-demo-v1'
+const USER_KEY='pckku-demo-user'
 const today=()=>new Date().toISOString().slice(0,10)
 const addDays=(d,n)=>{const x=new Date(d+'T00:00:00Z');x.setUTCDate(x.getUTCDate()+n);return x.toISOString().slice(0,10)}
 const esc=(s)=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
@@ -172,16 +166,8 @@ const isOverdue=(s)=>s&&!['Done','Skipped'].includes(s.status)&&(s.due||s.due_da
 const uid=()=>Math.random().toString(36).slice(2,9)
 const money=(n)=>n?Number(n).toLocaleString('th-TH'):'-'
 
-/* ===================== Supabase data layer ===================== */
-const cfgLocal=(()=>{try{return JSON.parse(localStorage.getItem(CFG_KEY)||'null')}catch(e){return null}})()
-const configured=(v)=>v&&!String(v).includes('YOUR_')
-const SUPA_URL=(cfgLocal&&configured(cfgLocal.url))?cfgLocal.url:(configured(window.SUPABASE_URL)?window.SUPABASE_URL:'')
-const SUPA_KEY=(cfgLocal&&configured(cfgLocal.key))?cfgLocal.key:(configured(window.SUPABASE_ANON_KEY)?window.SUPABASE_ANON_KEY:'')
-const ONLINE=!!(SUPA_URL&&SUPA_KEY)
-let sb=null
-const CLIENT=uid()
+/* ===================== Demo data layer (localStorage) ===================== */
 let S=null
-let lastPushed='',lastPushAt=0,pushTimer=null
 
 function seed(){
   const users=[
@@ -242,162 +228,29 @@ function seed(){
   return {users,templates,projects,notifications,currentUser:2,route:'dashboard',tab:'checklist'}
 }
 
-function flatten(){
-  return {
-    users:S.users.map(u=>({id:Number(u.id),name:u.name,role:u.role,department:u.department||null,inapp:!!u.inapp,email:!!u.email})),
-    templates:S.templates.map(t=>({id:Number(t.id),name:t.name,category:t.category||null,description:t.description||null,version:Number(t.version)||1})),
-    template_steps:S.templates.flatMap(t=>(t.steps||[]).map(s=>({id:String(s.id),template_id:Number(t.id),order_index:Number(s.order),name:s.name,days:Number(s.days)||1,role:s.role||null,attachment:!!s.attachment,depends_on_order:s.depends_on_order?Number(s.depends_on_order):null}))),
-    projects:S.projects.map(p=>({id:String(p.id),code:p.code,name:p.name,template_id:p.templateId?Number(p.templateId):null,manager_id:p.managerId?Number(p.managerId):null,start_date:p.start||null,status:p.status,budget:p.budget?Number(p.budget):null})),
-    project_steps:S.projects.flatMap(p=>(p.steps||[]).map(s=>({id:String(s.id),project_id:String(p.id),order_index:Number(s.order),name:s.name,description:s.description||'',assignee:s.assignee?Number(s.assignee):null,due_date:s.due||null,status:s.status,attachment:!!s.attachment,depends_on_id:s.depends_on_id||null,completed_at:s.completed_at||null}))),
-    checklist_items:S.projects.flatMap(p=>(p.steps||[]).flatMap(s=>(s.checklist||[]).map((c,i)=>({id:String(c.id),step_id:String(s.id),label:c.label,is_done:!!c.done,order_index:i+1})))),
-    activity:S.projects.flatMap(p=>(p.activity||[]).map(a=>({id:String(a.id),project_id:String(p.id),step_id:a.step_id||null,actor:a.actor?Number(a.actor):null,action:a.action,at:a.at||today()}))),
-    notifications:S.notifications.map(n=>({id:String(n.id),user_id:Number(n.user),type:n.type,title:n.title,body:n.body||'',link:n.link||'',is_read:!!n.read,channel:n.channel||'in-app',at:n.at||today(),dedupe:n.dedupe||null}))
-  }
+function save(){try{localStorage.setItem(LOCAL_KEY,JSON.stringify(S))}catch(e){}}
+
+function resetDemo(){
+  localStorage.removeItem(LOCAL_KEY)
+  localStorage.removeItem(USER_KEY)
+  S=seed();save();render()
+  toast('รีเซ็ตแล้ว','ข้อมูลตัวอย่างกลับมาแล้ว')
 }
 
-const UI_KEYS=['currentUser','route','_id','tab','_open','_tpl','_taskFilter']
-function expand(d){
-  const old=Object.fromEntries(UI_KEYS.map(k=>[k,S?S[k]:undefined]))
-  const users=(d.users||[]).map(u=>({...u,id:Number(u.id),inapp:u.inapp?1:0,email:u.email?1:0}))
-  const templates=(d.templates||[]).map(t=>({...t,id:Number(t.id),
-    steps:(d.template_steps||[]).filter(s=>Number(s.template_id)===Number(t.id)).sort((a,b)=>a.order_index-b.order_index)
-      .map(s=>({id:s.id,order:Number(s.order_index),name:s.name,days:Number(s.days),role:s.role,attachment:!!s.attachment,depends_on_order:s.depends_on_order?Number(s.depends_on_order):null}))}))
-  const projects=(d.projects||[]).map(p=>({
-    id:p.id,code:p.code,name:p.name,templateId:p.template_id?Number(p.template_id):null,
-    managerId:p.manager_id?Number(p.manager_id):null,start:p.start_date,status:p.status,budget:p.budget,
-    steps:(d.project_steps||[]).filter(s=>s.project_id===p.id).sort((a,b)=>a.order_index-b.order_index)
-      .map(s=>({id:s.id,order:Number(s.order_index),name:s.name,description:s.description||'',
-        assignee:s.assignee?Number(s.assignee):null,due:s.due_date,status:s.status,attachment:!!s.attachment,
-        depends_on_id:s.depends_on_id||null,completed_at:s.completed_at||null,
-        checklist:(d.checklist_items||[]).filter(c=>c.step_id===s.id).sort((a,b)=>a.order_index-b.order_index)
-          .map(c=>({id:c.id,label:c.label,done:!!c.is_done}))})),
-    activity:(d.activity||[]).filter(a=>a.project_id===p.id).sort((a,b)=>String(b.at||'').localeCompare(String(a.at||'')))
-      .map(a=>({id:a.id,at:a.at,actor:a.actor?Number(a.actor):null,action:a.action}))
-  }))
-  const notifications=(d.notifications||[]).map(n=>({id:n.id,user:Number(n.user_id),type:n.type,title:n.title,body:n.body||'',link:n.link||'',read:n.is_read?1:0,channel:n.channel||'in-app',at:n.at||today(),dedupe:n.dedupe||''}))
-  const savedUser=Number(localStorage.getItem('pcteam-user'))
-  return {users,templates,projects,notifications,
-    currentUser:users.some(u=>u.id===old.currentUser)?old.currentUser:(users.some(u=>u.id===savedUser)?savedUser:(users.find(u=>u.role==='Project Manager')?.id||users[0]?.id||2)),
-    route:old.route||'dashboard',tab:old.tab||'checklist',
-    _id:old._id,_open:old._open,_tpl:old._tpl,_taskFilter:old._taskFilter}
+function loadLocal(){
+  try{
+    const st=JSON.parse(localStorage.getItem(LOCAL_KEY))||seed()
+    const saved=Number(localStorage.getItem(USER_KEY))
+    if(st.users&&st.users.some(u=>u.id===saved))st.currentUser=saved
+    return st
+  }catch(e){return seed()}
 }
-
-async function pull(){
-  const res=await Promise.all(TABLES.map(t=>sb.from(t).select('*')))
-  const bad=res.find(r=>r&&r.error)
-  if(bad){console.error('[supabase] load',bad.error);toast('โหลดข้อมูลไม่สำเร็จ',bad.error.message,true);return false}
-  const d=Object.fromEntries(TABLES.map((t,i)=>[t,res[i].data||[]]))
-  if(!d.users||!d.users.length){
-    S=seed();lastPushed='{}';await pushNow();return true
-  }
-  S=expand(d)
-  lastPushed=JSON.stringify(flatten(S))
-  return true
-}
-
-async function pushNow(){
-  if(!ONLINE||!sb)return
-  clearTimeout(pushTimer)
-  const cur=flatten(S)
-  const curStr=JSON.stringify(cur)
-  if(curStr===lastPushed)return
-  const prev=(()=>{try{return JSON.parse(lastPushed||'{}')}catch(e){return{}}})()
-  const jobs=[]
-  for(const t of TABLES){
-    const prevById=Object.fromEntries((prev[t]||[]).map(r=>[String(r.id),r]))
-    const changed=(cur[t]||[]).filter(r=>JSON.stringify(r)!==JSON.stringify(prevById[String(r.id)]))
-    if(changed.length)jobs.push(sb.from(t).upsert(changed,{onConflict:'id'}))
-  }
-  if(!jobs.length){lastPushed=curStr;return}
-  lastPushAt=Date.now()
-  const res=await Promise.all(jobs)
-  const bad=res.find(r=>r&&r.error)
-  if(bad){console.error('[supabase] save',bad.error);toast('บันทึกไม่สำเร็จ',bad.error.message,true);return}
-  lastPushed=curStr
-}
-
-function save(){
-  if(!ONLINE){try{localStorage.setItem(LOCAL_KEY,JSON.stringify(S))}catch(e){}return}
-  clearTimeout(pushTimer);pushTimer=setTimeout(pushNow,200)
-}
-
-function subscribe(){
-  const ch=sb.channel('pcteam-'+CLIENT)
-  TABLES.forEach(t=>ch.on('postgres_changes',{event:'*',schema:'public',table:t},()=>{
-    if(Date.now()-lastPushAt<1200)return
-    pull().then(ok=>{if(ok){render();toast('มีสมาชิกอัปเดตข้อมูล','หน้าจอถูก refresh ให้ตรงกับทีมแล้ว')}})
-  }))
-  ch.subscribe(st=>setConn(st==='SUBSCRIBED'))
-}
-
-function setConn(ok){
-  const el=document.getElementById('conn')
-  if(el)el.innerHTML=ok?'<i class="live-dot"></i> แชร์กับทีม · สด':'<i class="live-dot off"></i> กำลังเชื่อมต่อ...'
-}
-
-async function resetTeam(){
-  if(!ONLINE){localStorage.removeItem(LOCAL_KEY);S=seed();save();render();toast('รีเซ็ตแล้ว','ข้อมูลตัวอย่างกลับมาแล้ว');return}
-  if(!confirm('รีเซ็ตข้อมูลทั้งทีมกลับเป็นข้อมูลตัวอย่าง?'))return
-  const fresh=seed(),freshFlat=flatten(fresh)
-  const res=await Promise.all(TABLES.map(t=>sb.from(t).select('id')))
-  const dels=[]
-  TABLES.forEach((t,i)=>{
-    const keep=new Set((freshFlat[t]||[]).map(r=>String(r.id)))
-    const extra=(res[i].data||[]).filter(r=>!keep.has(String(r.id))).map(r=>r.id)
-    if(extra.length)dels.push(sb.from(t).delete().in('id',extra))
-  })
-  await Promise.all(dels)
-  S=fresh;lastPushed='{}';await pushNow();render();toast('รีเซ็ตแล้ว','ข้อมูลตัวอย่างกลับมาสำหรับทุกคนในทีม')
-}
-
-function renderSetup(){
-  const el=document.getElementById('setupBar');if(!el)return
-  if(ONLINE){el.innerHTML='';return}
-  el.innerHTML=`<div class="setup-bar"><div style="flex:1">
-    <b>⚠️ โหมดท้องถิ่น</b> — ข้อมูลอยู่เฉพาะเบราว์เซอร์นี้ ยังไม่แชร์กับทีม
-    <button class="btn ghost small" onclick="toggleSetup()">ตั้งค่า Supabase</button></div>
-    <div id="setupPanel" style="display:none;width:100%;max-width:780px"><div class="setup-panel">
-      <b>เชื่อมแอปให้ทีมใช้ร่วมกัน (ทำครั้งเดียว)</b>
-      <ol>
-        <li>สร้างโปรเจกต์ที่ <a href="https://supabase.com/dashboard" target="_blank">supabase.com</a></li>
-        <li>เปิด SQL Editor แล้วรันไฟล์ <code>supabase/schema.sql</code> จาก repo นี้</li>
-        <li>คัดลอก Project URL + anon key (Project Settings → API) ใส่ด้านล่าง</li>
-        <li>เพื่อให้เพื่อน teamwork ได้โดยไม่ต้องใส่เอง: แก้ <code>app/config.js</code> แล้ว commit ขึ้น <code>main</code></li>
-      </ol>
-      <div class="form-row"><div><label class="field">Project URL</label><input id="cfgUrl" placeholder="https://xxxx.supabase.co"></div>
-      <div><label class="field">anon key</label><input id="cfgKey" placeholder="eyJhbGci..."></div></div>
-      <button class="btn small" onclick="saveCfg()">เชื่อมต่อตอนนี้</button>
-    </div></div></div>`
-}
-function toggleSetup(){const p=document.getElementById('setupPanel');if(p)p.style.display=p.style.display==='none'?'block':'none'}
-function saveCfg(){
-  const url=document.getElementById('cfgUrl').value.trim(),key=document.getElementById('cfgKey').value.trim()
-  if(!url.startsWith('https://')||!key){toast('ข้อมูลไม่ครบ','กรอก Project URL และ anon key','err');return}
-  localStorage.setItem(CFG_KEY,JSON.stringify({url,key}))
-  location.reload()
-}
-
-function loadLocal(){try{return JSON.parse(localStorage.getItem(LOCAL_KEY))||seed()}catch(e){return seed()}}
 function parseRoute(){
   if(!S)return
   const p=location.hash.replace(/^#\/?/,'').split('/')
   S.route=p[0]||'dashboard';S._id=p[1]||null
 }
-async function boot(){
-  renderSetup()
-  if(ONLINE){
-    try{
-      const {createClient}=await import('https://esm.sh/@supabase/supabase-js@2')
-      sb=createClient(SUPA_URL,SUPA_KEY,{realtime:{params:{eventsPerSecond:10}}})
-      await pull();subscribe();setConn(true)
-    }catch(e){
-      console.error('[boot]',e)
-      toast('เชื่อมต่อ Supabase ไม่สำเร็จ',String(e.message||e),true)
-      S=loadLocal();setConn(false)
-    }
-  }else{S=loadLocal();setConn(false)}
-  parseRoute();render()
-}
+function boot(){S=loadLocal();parseRoute();render()}
 
 /* ===================== app logic ===================== */
 const drafts={}
@@ -467,8 +320,8 @@ function commitStep(id,changes){
 /* ===================== actions ===================== */
 const act={
   go(page,id){S.route=page;S._id=id||null;save();render()},
-  switchUser(v){S.currentUser=Number(v);try{localStorage.setItem('pcteam-user',v)}catch(e){}render()},
-  reset(){resetTeam()},
+  switchUser(v){S.currentUser=Number(v);try{localStorage.setItem(USER_KEY,v)}catch(e){}render()},
+  reset(){resetDemo()},
   scan(){
     let scanned=0,created=0
     for(const p of S.projects){
@@ -584,8 +437,8 @@ function viewDashboard(){
   const overdue=all.filter(isOverdue).length
   const soon=all.filter(s=>!['Done','Skipped'].includes(s.status)&&s.due&&s.due>=today()&&s.due<=addDays(today(),3)).length
   const upcoming=all.filter(s=>!['Done','Skipped'].includes(s.status)&&s.due).sort((a,b)=>a.due.localeCompare(b.due)).slice(0,10)
-  return `<h1 class="page-title">ภาพรวมโครงการ</h1><p class="page-sub">สถานะล่าสุดของทุกโครงการและกำหนดส่งที่ใกล้เข้ามา — แชร์ร่วมกับทีม</p>
-  <div class="hint">💡 กด “รันสแกนกำหนดเวลา” ด้านซ้ายเพื่อจำลอง scheduler ทุกวัน 08:00 น. — การเปลี่ยนแปลงจะถูกบันทึกกลางและอัปเดตให้ทุกคนในทีมแบบสด</div>
+  return `<h1 class="page-title">ภาพรวมโครงการ</h1><p class="page-sub">สถานะล่าสุดของทุกโครงการและกำหนดส่งที่ใกล้เข้ามา — ข้อมูลตัวอย่างสำหรับการสาธิต</p>
+  <div class="hint">💡 กด “รันสแกนกำหนดเวลา” ด้านซ้ายเพื่อจำลอง scheduler ทุกวัน 08:00 น. — ระบบจะสร้างการแจ้งเตือนและเปลี่ยนสถานะงานที่เลยกำหนด (บันทึกในเบราว์เซอร์นี้)</div>
   <div class="stats">
     <div class="stat"><div class="num">${S.projects.filter(p=>p.status==='Active').length}</div><div class="label">โครงการที่รันอยู่</div></div>
     <div class="stat green"><div class="num">${all.filter(s=>s.status==='Done').length}</div><div class="label">ขั้นตอนเสร็จแล้ว / ${all.length}</div></div>
@@ -686,7 +539,7 @@ function viewTasks(){
 function viewNotifications(){
   const list=S.notifications.filter(n=>n.user===S.currentUser)
   const u=user(S.currentUser)
-  return `<div class="page-head"><div><h1 class="page-title">การแจ้งเตือน</h1><p class="page-sub">แจ้งเตือนจากทุกโครงการในทีม (อีเมลเป็น dry-run: ดูใน Console)</p></div>
+  return `<div class="page-head"><div><h1 class="page-title">การแจ้งเตือน</h1><p class="page-sub">แจ้งเตือนจากทุกโครงการในข้อมูลตัวอย่าง (อีเมลเป็น dry-run: ดูใน Console)</p></div>
     <button class="btn secondary" onclick="act.readAll()">อ่านทั้งหมด</button></div>
   <div class="card"><h2>ตั้งค่าการรับการแจ้งเตือนของ ${esc(u.name)}</h2>
     <label class="checklist-item"><input type="checkbox" ${u.inapp?'checked':''} onchange="act.pref('inapp',this.checked)"> แจ้งเตือนในแอป</label>

@@ -3,13 +3,12 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Project Checklist — ระบบติดตามโครงการพัฒนาบุคลากร | มหาวิทยาลัยขอนแก่น</title>
+<title>Project Checklist — Demo สำหรับฐานข้อมูล มหาวิทยาลัยขอนแก่น</title>
 <style>
 :root{
   --kku:#A73B24;--kku-dark:#7D2B19;--kku-soft:#FBEDEA;--kku-tint:#FFF7F4;
   --gold:#D9A441;--gold-soft:#FFF4D6;
   --bg:#FAF8F6;--card:#fff;--border:#EAE3DE;--text:#2E2623;--muted:#7E726C;
-  --green:#2E7D52;--green-soft:#E6F4EC;
   --radius:16px;--shadow:0 2px 8px rgba(84,45,32,.06),0 10px 24px rgba(84,45,32,.05);
   font-family:'Segoe UI','Noto Sans Thai',system-ui,-apple-system,sans-serif;
 }
@@ -29,8 +28,8 @@ header nav a:hover{background:rgba(255,255,255,.15);text-decoration:none}
   color:#fff;padding:70px 0 66px}
 .hero .tag{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);
   padding:5px 13px;border-radius:999px;font-size:12px;font-weight:600;margin-bottom:18px}
-.hero h1{font-size:38px;line-height:1.25;margin:0 0 14px;max-width:760px;letter-spacing:-.5px}
-.hero p{font-size:16px;color:rgba(255,255,255,.86);max-width:660px;margin:0 0 26px}
+.hero h1{font-size:38px;line-height:1.25;margin:0 0 14px;max-width:780px;letter-spacing:-.5px}
+.hero p{font-size:16px;color:rgba(255,255,255,.86);max-width:700px;margin:0 0 26px}
 .cta{display:flex;gap:12px;flex-wrap:wrap}
 .btn{display:inline-block;background:#fff;color:var(--kku);padding:12px 20px;border-radius:10px;font-weight:700;font-size:14px;
   box-shadow:0 6px 18px rgba(0,0,0,.16);transition:.15s}
@@ -55,6 +54,7 @@ ol.steps li::before{content:counter(s);position:absolute;left:18px;top:18px;widt
 ol.steps li b{display:block;margin-bottom:4px}
 .note{background:var(--gold-soft);border-left:4px solid var(--gold);border-radius:10px;padding:14px 18px;
   color:#7A5200;font-size:13px;margin-top:22px}
+code{background:#F6F1ED;border-radius:5px;padding:2px 6px;font-size:12px}
 footer{background:#3A231D;color:rgba(255,255,255,.75);padding:26px 0;font-size:13px;text-align:center}
 footer b{color:#fff}footer a{color:var(--gold)}
 @media(max-width:640px){.hero h1{font-size:29px}.hero{padding:48px 0}section{padding:40px 0}}
@@ -66,19 +66,19 @@ footer b{color:#fff}footer a{color:var(--gold)}
   <nav>
     <a href="#features">ฟีเจอร์</a>
     <a href="#start">เริ่มใช้งาน</a>
-    <a href="index.html">เปิดแอปทีม</a>
-    <a href="demo/index.html">Demo</a>
+    <a href="index.html">เปิด Demo</a>
+    <a href="https://github.com/pumisa-cloud/project/blob/main/design-document.md" target="_blank">โครงสร้างข้อมูล</a>
   </nav>
 </div></header>
 
 <div class="hero"><div class="wrap">
-  <span class="tag">🎓 ระบบบริหารโครงการพัฒนาบุคลากร</span>
-  <h1>กำหนดกระบวนการ มอบหมายงาน<br>และติดตามความคืบหน้า — ร่วมกันทั้งทีม</h1>
-  <p>แอปเว็บสำหรับทีม HRD ใช้กำหนดขั้นตอนมาตรฐาน สร้างโครงการ มอบหมายผู้รับผิดชอบ
-     ติดตามกำหนดส่ง และรับการแจ้งเตือนแบบ realtime ข้อมูลเก็บกลาง ทุกคนเห็นตรงกัน</p>
+  <span class="tag">🎓 Demo ระบบบริหารโครงการพัฒนาบุคลากร</span>
+  <h1>กำหนดกระบวนการ มอบหมายงาน<br>และติดตามความคืบหน้า</h1>
+  <p>แอปเว็บแบบ standalone สำหรับสาธิตการทำงานด้าน HRD ใช้กำหนดขั้นตอนมาตรฐาน สร้างโครงการ
+     มอบหมายผู้รับผิดชอบ และทดสอบกติกาการแจ้งเตือน — พร้อมปรับเป็นส่วนหนึ่งของฐานข้อมูลมหาวิทยาลัยในขั้นต่อไป</p>
   <div class="cta">
-    <a class="btn" href="index.html">🚀 เปิดแอปทีม</a>
-    <a class="btn ghost" href="demo/index.html">🧪 ลอง Demo ก่อน</a>
+    <a class="btn" href="index.html">🚀 เปิด Demo</a>
+    <a class="btn ghost" href="https://github.com/pumisa-cloud/project/blob/main/design-document.md" target="_blank">📐 ดูโครงสร้างข้อมูล</a>
   </div>
 </div></div>
 
@@ -90,32 +90,33 @@ footer b{color:#fff}footer a{color:var(--gold)}
     <div class="card"><div class="ico">👥</div><h3>มอบหมายงาน</h3><p>เลือกผู้รับผิดชอบและกำหนดส่ง ระบบแจ้งเตือนเมื่อกดบันทึก (แก้เป็นร่างก่อน ยังไม่แจ้งเตือนทันที)</p></div>
     <div class="card"><div class="ico">📊</div><h3>ติดตามความคืบหน้า</h3><p>ดู Checklist, Kanban และแถบความคืบหน้า พร้อมบล็อกขั้นตอนที่รอต้นทางอัตโนมัติ</p></div>
     <div class="card"><div class="ico">🔔</div><h3>แจ้งเตือน</h3><p>แจ้งเมื่อถูกมอบหมาย เปลี่ยนสถานะ ใกล้กำหนด หรือเลยกำหนด พร้อมป้องกันการแจ้งซ้ำ (dedupe)</p></div>
-    <div class="card"><div class="ico">⚡</div><h3>ทำงานร่วมกันสด</h3><p>ข้อมูลเก็บใน Supabase ทุกการแก้ไขอัปเดตให้สมาชิกทุกคนแบบ realtime ไม่ต้อง refresh</p></div>
+    <div class="card"><div class="ico">🗄️</div><h3>พร้อมเชื่อมฐานข้อมูล</h3><p>โครงสร้างตารางและ API ตัวอย่างอยู่ใน <code>design-document.md</code> และ <code>prototype/</code> พร้อมนำไปปรับเข้ากับระบบของมหาวิทยาลัย</p></div>
     <div class="card"><div class="ico">🧾</div><h3>Audit trail</h3><p>บันทึกประวัติทุกการเปลี่ยนแปลง ใครทำอะไรเมื่อไหร่ ตรวจสอบย้อนหลังได้ทันที</p></div>
   </div>
 </div></section>
 
 <section id="start" style="background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border)"><div class="wrap">
-  <h2 class="sec">เริ่มใช้งานในทีม</h2>
-  <p class="sec-sub">ตั้งค่าครั้งเดียว หลังจากนั้นทุกคนเปิด URL เดียวกันได้เลย</p>
+  <h2 class="sec">เริ่มใช้งาน และนำไปต่อยอด</h2>
+  <p class="sec-sub">ลอง Demo ก่อน แล้วใช้โครงสร้างที่มีอยู่เป็นจุดเริ่มต้นของการเชื่อมฐานข้อมูล</p>
   <ol class="steps">
-    <li><b>สร้าง Supabase</b> สร้างโปรเจกต์ที่ supabase.com แล้วรันไฟล์ <code>supabase/schema.sql</code> ใน SQL Editor</li>
-    <li><b>ใส่ config</b> วาง Project URL และ anon key ใน <code>app/config.js</code> แล้ว commit ขึ้น <code>main</code></li>
-    <li><b>แจ้งทีม</b> ส่งลิงก์ https://pumisa-cloud.github.io/project/ ให้เพื่อน แล้วให้แต่ละคนเลือกชื่อตัวเอง</li>
-    <li><b>เริ่มทำงาน</b> สร้างโครงการจากแม่แบบ มอบหมายงาน แล้วกด 💾 บันทึก — ทุกคนเห็นตรงกันทันที</li>
+    <li><b>ลอง Demo</b> เปิดแอป เลือกชื่อผู้ใช้มุมซ้าย ทดสอบสร้างโครงการ มอบหมายงาน และรันสแกนกำหนดเวลา</li>
+    <li><b>ทบทวนโครงสร้าง</b> ดู <code>design-document.md</code> และ <code>prototype/src/db.js</code> ซึ่งกำหนดตาราง users, templates, projects, steps และ notifications</li>
+    <li><b>ปรับเป็น DB มหาวิทยาลัย</b> จับคู่ตารางและบทบาทในตัวอย่างให้ตรงกับฐานข้อมูลและระเบียบของหน่วยงาน</li>
+    <li><b>แทนที่ localStorage</b> ใช้ Express API ใน <code>prototype/</code> เป็นจุดเริ่มต้น แล้วเปลี่ยนจากข้อมูลจำลองเป็นการเรียกข้อมูลจริง</li>
   </ol>
-  <div class="note">💡 ยังไม่ได้ใส่ config? แอปจะเปิดใน <b>โหมดท้องถิ่น</b> (เก็บข้อมูลในเบราว์เซอร์) และมีปุ่ม <b>ตั้งค่า Supabase</b> ให้ลองใส่ค่าได้ทันที</div>
+  <div class="note">⚠️ ขณะนี้เป็น <b>Demo แบบไม่ล็อกอิน</b> ข้อมูลทั้งหมดอยู่ใน <b>localStorage ของเบราว์เซอร์นี้</b> — ไม่มีการส่งข้อมูลไปยังเซิร์ฟเวอร์หรือฐานข้อมูลใดๆ</div>
 </div></section>
 
 <section><div class="wrap"><div class="band">
-  <div><h3>พร้อมให้ทีมเริ่มแล้ว</h3><p>เปิดแอปได้ทันที หรือลอง Demo ก่อนเพื่อดูภาพรวมของระบบ</p></div>
-  <div class="cta"><a class="btn dark" href="index.html">เปิดแอปทีม →</a><a class="btn ghost" style="color:var(--kku);border-color:#E5C9C0" href="demo/index.html">ลอง Demo</a></div>
+  <div><h3>พร้อมเป็นจุดเริ่มต้นให้ทีมแล้ว</h3><p>เปิด Demo ได้ทันที หรือดูคู่มือเพื่อเตรียมเชื่อมกับฐานข้อมูลของมหาวิทยาลัย</p></div>
+  <div class="cta"><a class="btn dark" href="index.html">เปิด Demo →</a><a class="btn ghost" style="color:var(--kku);border-color:#E5C9C0" href="https://github.com/pumisa-cloud/project/blob/main/prototype/README.md" target="_blank">คู่มือ Prototype</a></div>
 </div></div></section>
 
 <footer><div class="wrap">
   <b>Project Checklist</b> · มหาวิทยาลัยขอนแก่น · ใช้ธีมสี KKU Maroon <code>#A73B24</code><br>
   เอกสาร: <a href="https://github.com/pumisa-cloud/project/blob/main/README.md">README</a> · <a href="https://github.com/pumisa-cloud/project/blob/main/design-document.md">Design Document</a> ·
-  <a href="https://github.com/pumisa-cloud/project/blob/main/supabase/README.md">คู่มือ Supabase</a>
+  <a href="https://github.com/pumisa-cloud/project/blob/main/prototype/src/db.js">โครงสร้างตาราง</a> ·
+  <a href="https://github.com/pumisa-cloud/project/blob/main/demo/README.md">คู่มือ Demo</a>
 </div></footer>
 </body>
 </html>
