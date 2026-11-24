@@ -10,7 +10,8 @@
 - ทุกคนในทีมเปิด URL เดียวกัน แล้วเลือกชื่อตัวเอง (ไม่ต้องล็อกอิน)
 - ข้อมูลเก็บกลางที่ **Supabase (Postgres)** และอัปเดตแบบ **realtime** ให้ทุกคนเห็นตรงกัน
 - Deploy อัตโนมัติจาก `main` ผ่าน GitHub Actions (`.github/workflows/deploy.yml`)
-- ไฟล์: [`app/index.html`](app/index.html)
+- หน้าแนะนำโปรเจกต์: **https://pumisa-cloud.github.io/project/landing.html**
+- ไฟล์: [`app/index.html`](app/index.html), [`app/landing.html`](app/landing.html)
 - ตั้งค่า Supabase: [`supabase/README.md`](supabase/README.md)
 
 > ถ้ายังไม่ได้ใส่ URL/anon key ของ Supabase แอปจะทำงานใน **โหมดท้องถิ่น** (เก็บใน `localStorage`)
