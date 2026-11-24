@@ -89,7 +89,7 @@ footer b{color:#fff}footer a{color:var(--gold)}
     <div class="card"><div class="ico">⚙️</div><h3>แม่แบบกระบวนการ</h3><p>กำหนดขั้นตอน ระยะเวลา บทบาท หลักฐาน และ dependency แล้วนำไปใช้สร้างโครงการซ้ำได้</p></div>
     <div class="card"><div class="ico">👥</div><h3>มอบหมายงาน</h3><p>เลือกผู้รับผิดชอบและกำหนดส่ง ระบบแจ้งเตือนเมื่อกดบันทึก (แก้เป็นร่างก่อน ยังไม่แจ้งเตือนทันที)</p></div>
     <div class="card"><div class="ico">📊</div><h3>ติดตามความคืบหน้า</h3><p>ดู Checklist, Kanban และแถบความคืบหน้า พร้อมบล็อกขั้นตอนที่รอต้นทางอัตโนมัติ</p></div>
-    <div class="card"><div class="ico">🔔</div><h3>แจ้งเตือน</h3><p>แจ้งเมื่อถูกมอบหมาย เปลี่ยนสถานะ ใกล้กำหนด หรือเลยกำหนด พร้อมกันซ้ำ (dedupe)</p></div>
+    <div class="card"><div class="ico">🔔</div><h3>แจ้งเตือน</h3><p>แจ้งเมื่อถูกมอบหมาย เปลี่ยนสถานะ ใกล้กำหนด หรือเลยกำหนด พร้อมป้องกันการแจ้งซ้ำ (dedupe)</p></div>
     <div class="card"><div class="ico">⚡</div><h3>ทำงานร่วมกันสด</h3><p>ข้อมูลเก็บใน Supabase ทุกการแก้ไขอัปเดตให้สมาชิกทุกคนแบบ realtime ไม่ต้อง refresh</p></div>
     <div class="card"><div class="ico">🧾</div><h3>Audit trail</h3><p>บันทึกประวัติทุกการเปลี่ยนแปลง ใครทำอะไรเมื่อไหร่ ตรวจสอบย้อนหลังได้ทันที</p></div>
   </div>
@@ -100,7 +100,7 @@ footer b{color:#fff}footer a{color:var(--gold)}
   <p class="sec-sub">ตั้งค่าครั้งเดียว หลังจากนั้นทุกคนเปิด URL เดียวกันได้เลย</p>
   <ol class="steps">
     <li><b>สร้าง Supabase</b> สร้างโปรเจกต์ที่ supabase.com แล้วรันไฟล์ <code>supabase/schema.sql</code> ใน SQL Editor</li>
-    <li><b>ใส่ config</b> ว่าง Project URL และ anon key ใน <code>app/config.js</code> แล้ว commit ขึ้น <code>main</code></li>
+    <li><b>ใส่ config</b> วาง Project URL และ anon key ใน <code>app/config.js</code> แล้ว commit ขึ้น <code>main</code></li>
     <li><b>แจ้งทีม</b> ส่งลิงก์ https://pumisa-cloud.github.io/project/ ให้เพื่อน แล้วให้แต่ละคนเลือกชื่อตัวเอง</li>
     <li><b>เริ่มทำงาน</b> สร้างโครงการจากแม่แบบ มอบหมายงาน แล้วกด 💾 บันทึก — ทุกคนเห็นตรงกันทันที</li>
   </ol>
